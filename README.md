@@ -1,76 +1,255 @@
 # Ex06 BMI Calculator
-## Date: 
+## Date:18-3-26
+### NAME : RATTISH KUMAR SS
+### REG NO : 212224230223
 
 ## AIM
-To develop a responsive and interactive Body Mass Index (BMI) Calculator using React that allows users to input their height and weight, and calculates their BMI to categorize their health status (e.g., Underweight, Normal, Overweight, Obese).
+To create a BMI calculator using React Router 
 
-## DESIGN STEPS
+## ALGORITHM
+### STEP 1 State Initialization
+Manage the current page (Home or Calculator) using React Router.
 
-### STEP 1: Initialize React Project
+### STEP 2 User Input
+Accept weight and height inputs from the user.
 
-<li>Create a new React app using create-react-app.</li>
-<li>Install React Router using:</li>
-npm install react-router-dom
+### STEP 3 BMI Calculation
+Calculate the BMI based on user input.
 
-### STEP 2: Set Up Routing
+### STEP 4 Categorization
+Classify the BMI result into categories (Underweight, Normal weight, Overweight, Obesity).
 
-Create routing structure with react-router-dom:
-
-<li>Home route (/) – Intro or Navigation</li>
-
-<li>BMI Calculator route (/bmi)</li>
-
-<li>Result route (/result)</li>
-
-### STEP 3: Design the BMI Form Page
-
-<li>Create a form to accept Height (in cm or m) and Weight (in kg).</li>
-
-<li>On form submit, navigate to the result page with entered values via URL query params or context/state.</li>
-
-## STEP 4: Handle Input Validation
-
-<li>Check if height and weight are valid numbers.</li>
-
-<li>Optionally, show error messages for invalid inputs.</li>
-
-### STEP 5: Perform BMI Calculation
-
-<li>In the result component:
-
-<li>Extract height and weight from the route (URL or passed state).</li>
-
-<li>Apply the BMI formula:</li>
-
-![image](https://github.com/user-attachments/assets/ec785506-c96b-489e-8783-fb1a5d36101a)
-​
- 
-<li>Convert height from cm to m if needed.</li></li>
-
-### STEP 6: Display Result
-
-<li>Show calculated BMI.</li>
-
-<li>Show category based on BMI range:
-
-<li>Underweight, Normal, Overweight, Obese, etc.</li></li>
-
-### STEP 7: Navigation Options
-
-<li>Provide a button to go back to the BMI form to calculate again.</li>
-
-### STEP 8: Enhancements
-
-<li>Add styling using CSS or Tailwind.</li>
+### STEP 5 Navigation
+Navigate between pages using React Router.
 
 ## PROGRAM
 
+App.jsx
+
+```
+
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import "./App.css";
+
+function Home() {
+  return (
+    <div className="page">
+      <h2>Welcome to the BMI Calculator 💫</h2>
+      <p>
+        Use this tool to calculate your Body Mass Index (BMI) and understand your health status.
+      </p>
+      <Link to="/calculator" className="btn">Go to Calculator</Link>
+    </div>
+  );
+}
+
+function BMICalculator() {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [bmi, setBmi] = useState(null);
+  const [category, setCategory] = useState("");
+
+  const calculateBMI = () => {
+    if (weight && height) {
+      const h = height / 100;
+      const bmiValue = (weight / (h * h)).toFixed(2);
+      setBmi(bmiValue);
+
+      if (bmiValue < 18.5) setCategory("Underweight");
+      else if (bmiValue < 25) setCategory("Normal weight");
+      else if (bmiValue < 30) setCategory("Overweight");
+      else setCategory("Obese");
+    }
+  };
+
+  return (
+    <div className="page">
+      <h2>BMI Calculator</h2>
+      <div className="form">
+        <input
+          type="number"
+          placeholder="Enter weight (kg)"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Enter height (cm)"
+          value={height}
+          onChange={(e) => setHeight(e.target.value)}
+        />
+        <button onClick={calculateBMI}>Calculate</button>
+      </div>
+
+      {bmi && (
+        <div className="result">
+          <h3>Your BMI: {bmi}</h3>
+          <p>Category: {category}</p>
+        </div>
+      )}
+
+      <Link to="/" className="btn back">Back to Home</Link>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="app-container">
+        <nav className="navbar">
+          <h1>BMI Calculator</h1>
+          <div>
+            <Link to="/">Home</Link>
+            <Link to="/calculator">Calculator</Link>
+          </div>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/calculator" element={<BMICalculator />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+
+```
+App.css
+
+```
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to bottom right, #a855f7, #ec4899);
+  color: white;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  text-align: center;
+  width: 100%;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 15px 40px;
+  border-radius: 12px;
+  margin: 20px auto;
+  width: 80%;
+}
+
+.navbar a {
+  color: #ffe4f2;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.page {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
+  margin: 20px auto;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  text-align: center;
+  outline: none;
+  font-size: 1em;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background-color: #9333ea;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #a855f7;
+}
+
+.result {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 10px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.btn {
+  background-color: #ec4899;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background-color: #db2777;
+}
+
+.back {
+  background-color: #9333ea;
+}
+
+.back:hover {
+  background-color: #7e22ce;
+}
+
+
+```
 
 
 ## OUTPUT
 
+<img width="1501" height="769" alt="image" src="https://github.com/user-attachments/assets/a4bf6d88-3cf1-4a4c-a788-8e99a91dc4c6" />
 
+
+
+
+
+<img width="1507" height="766" alt="image" src="https://github.com/user-attachments/assets/4fbfd3a1-9a05-4a33-880c-208eb108e31a" />
 
 
 ## RESULT
-The BMI Calculator successfully takes user input for height and weight, performs the BMI calculation in real-time using React state and event handling, and displays the BMI value along with the corresponding health category.
+The program for creating BMI Calculator using React Router is executed successfully.
